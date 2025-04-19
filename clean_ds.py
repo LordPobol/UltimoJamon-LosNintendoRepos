@@ -166,6 +166,10 @@ def analizar_sentimiento(texto):
             'subjetividad': 0
         }
 
+# Filtrar los hashtags por fila
+def obtener_hashtags_frecuentes_individuales(hashtags_fila, hashtags_validos):
+    return " ".join([tag for tag in hashtags_fila if tag in hashtags_validos])
+
 # =============================================================================
 # Funciones de extracción de características
 # =============================================================================
@@ -194,6 +198,7 @@ def extraer_caracteristicas(tweet):
         "tweet_text": texto_lematizado,
         "hashtags": hashtags,
         "texto_completo": texto_completo,
+        "texto_bert": texto_limpio_final + " " + " ".join(hashtags),
         "longitud_texto": len(texto_lematizado),
         "num_palabras": len(texto_lematizado.split()),
         **palabras_clave,
@@ -236,7 +241,11 @@ def main():
     hashtags_frecuentes_df = hashtags_df[hashtags_frecuentes]
     
     # 5. Preparar texto completo
-    df["texto_completo"] = df["tweet_text"] + " " + df["hashtags"].apply(lambda x: " ".join(x))
+    umbral_bajo = 5
+    hashtags_vectorizacion = hashtags_df.columns[hashtags_df.sum() >= umbral_bajo]
+    hashtags_validos = {col.replace('tag_', '') for col in hashtags_vectorizacion}
+    df["hashtags_frecuentes_bajos"] = df["hashtags"].apply(lambda h: obtener_hashtags_frecuentes_individuales(h, hashtags_validos))
+    df["texto_completo"] = df["tweet_text"] + " " + df["hashtags_frecuentes_bajos"]
     
     # 6. Vectorización TF-IDF
     print("Aplicando vectorización TF-IDF...")
@@ -266,7 +275,7 @@ def main():
     tfidf_df = pd.DataFrame(X_tfidf.toarray(), columns=[f"tfidf_{i}" for i in range(X_tfidf.shape[1])])
     
     # Seleccionar columnas para el DataFrame final
-    columnas_base = ["tweet_id", "tweet_text", "texto_completo"]
+    columnas_base = ["tweet_id", "tweet_text", "texto_completo", "texto_bert"]
     columnas_metricas = ["longitud_texto", "num_palabras"]
     columnas_palabras_clave = ["comida", "restriccion", "purga", "imagen_corporal", "ejercicio"]
     columnas_sentimiento = ["polaridad", "subjetividad"]
