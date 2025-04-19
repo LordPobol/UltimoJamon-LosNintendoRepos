@@ -29,7 +29,9 @@ except:
 ABREVIATURAS = {
     'q': 'que', 'x': 'por', 'd': 'de', 'k': 'que', 'tb': 'también',
     'tmb': 'también', 'pq': 'porque', 'xq': 'porque', 'dnd': 'donde',
-    'kien': 'quien', 'salu2': 'saludos', 'aki': 'aquí', 'tqm': 'te quiero mucho'
+    'kien': 'quien', 'salu2': 'saludos', 'aki': 'aquí', 'tqm': 'te quiero mucho',
+    'when': 'cuando', 'wtf': 'qué carajos', 'lmao': 'risa', 'lmfao': 'risa',
+    'lol': 'risa'
 }
 
 # Palabras clave relacionadas con trastornos alimenticios
