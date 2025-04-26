@@ -8,7 +8,7 @@ import unicodedata
 import spacy
 import swifter
 from nltk.corpus import stopwords
-from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.preprocessing import MultiLabelBinarizer, StandardScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from textblob import TextBlob
 from deep_translator import GoogleTranslator
@@ -250,11 +250,13 @@ def main():
     # 6. Vectorización TF-IDF
     print("Aplicando vectorización TF-IDF...")
     vectorizer = TfidfVectorizer(
-        max_features=500,
-        ngram_range=(1,2),
+        max_features=1000,
+        ngram_range=(1,3),
         stop_words=stop_words_es,
-        min_df=3,
-        max_df=0.85
+        min_df=2,
+        max_df=0.85,
+        sublinear_tf=True,
+        norm='l2'
     )
     X_tfidf = vectorizer.fit_transform(df["texto_completo"])
     y = df["class"]
@@ -273,7 +275,7 @@ def main():
     # 7. Crear DataFrame final
     print("Creando DataFrame final...")
     tfidf_df = pd.DataFrame(X_tfidf.toarray(), columns=[f"tfidf_{i}" for i in range(X_tfidf.shape[1])])
-    
+
     # Seleccionar columnas para el DataFrame final
     columnas_base = ["tweet_id", "tweet_text", "texto_completo", "texto_bert"]
     columnas_metricas = ["longitud_texto", "num_palabras"]
@@ -289,13 +291,23 @@ def main():
         hashtags_frecuentes_df,
         tfidf_df
     ], axis=1)
+
+    #8. Normalizar las características
+    columnas_a_escalar = ["longitud_texto", "num_palabras", "polaridad", "subjetividad"]
+    scaler = StandardScaler()
+    df_final[columnas_a_escalar] = scaler.fit_transform(df_final[columnas_a_escalar])
     
     # Convertir etiquetas a valores numéricos y agregar al final
     df_final['class'] = df['class'].map({'control': 0, 'anorexia': 1})
     
-    # 8. Guardar resultados
+    # 9. Guardar resultados
     print("Guardando resultados...")
-    df_final.to_csv("tweets_procesados.csv", index=False, encoding="utf-8")
+    df_final.to_csv("NO_USAR_tweets_procesados.csv", index=False, encoding="utf-8")
+
+    # 10. Guardar resultados para los modelos tradicionales
+    print("Guardando resultados para modelos tradicionales...")
+    ds_tradicional = df_final.drop(columns=["tweet_id", "tweet_text", "texto_completo", "texto_bert"])
+    ds_tradicional.to_csv("ds_tradicional.csv", index=False, encoding="utf-8")
     
     # Imprimir información final
     print("\nDataset final guardado con las siguientes columnas:")
