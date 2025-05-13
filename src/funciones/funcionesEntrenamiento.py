@@ -60,8 +60,8 @@ def calcular_roc_auc(y, y_res):
 
 def metricas_tpr_fpr(cm):
     TN, FP, FN, TP = cm.ravel()
-    TPR = TP / (TP + FN)
-    FPR = FP / (FP + TN)
+    FPR = 0.0 if FP + TN == 0.0 else FP / (FP + TN)
+    TPR = 0.0 if TP + FN == 0.0 else TP / (TP + FN)
     return TPR, FPR
 
 def hacer_pepinillo(modelo, nombre):
