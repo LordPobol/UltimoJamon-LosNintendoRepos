@@ -216,17 +216,15 @@ def test_hacer_pepinillo_crea_archivo_temporal(tmp_path):
     modelo = LogisticRegression()
     ruta_modelo = tmp_path / "modelo.pkl"
     
-    hacer_pepinillo(modelo, ruta_modelo.name)
+    hacer_pepinillo(modelo, str(ruta_modelo), test=True)
     
-    full_path = tmp_path.parent / "models" / ruta_modelo.name
-    assert os.path.exists(full_path)
+    assert ruta_modelo.exists()
 
 def test_hacer_pepinillo_modelo_valido(tmp_path):
     modelo = LogisticRegression()
-    nombre_archivo = tmp_path.name + "_modelo.pkl"
-    ruta_modelo = tmp_path.parent / "models" / nombre_archivo
+    ruta_modelo = tmp_path / "modelo_valido.pkl"
     
-    hacer_pepinillo(modelo, nombre_archivo)
+    hacer_pepinillo(modelo, str(ruta_modelo), test=True)
     
     with open(ruta_modelo, "rb") as f:
         modelo_cargado = pickle.load(f)

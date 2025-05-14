@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
@@ -64,6 +65,11 @@ def metricas_tpr_fpr(cm):
     TPR = 0.0 if TP + FN == 0.0 else TP / (TP + FN)
     return TPR, FPR
 
-def hacer_pepinillo(modelo, nombre):
-    with open(f"../../models/{nombre}", "wb") as f:
-        pickle.dump(modelo, f)
+def hacer_pepinillo(modelo, nombre, test=False):
+    if test:
+        os.makedirs(os.path.dirname(nombre), exist_ok=True)
+        with open(nombre, "wb") as f:
+            pickle.dump(modelo, f)
+    else:
+        with open(f"../../models/{nombre}", "wb") as f:
+            pickle.dump(modelo, f)
