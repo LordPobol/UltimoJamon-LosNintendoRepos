@@ -1,1 +1,1 @@
-# Proyecto de detección de su Pink Floyd
+# Proyecto de detección de señales de anorexia con inteligencia artificial
