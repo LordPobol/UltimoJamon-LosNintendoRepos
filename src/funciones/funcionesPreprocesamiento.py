@@ -1,3 +1,10 @@
+# --------------------------------------------------
+#
+# Autor: Pablo Spínola López
+# Description: Funciones centralizadas de la fase de preprocesamiento.
+# 
+# --------------------------------------------------
+
 import pandas as pd
 import unicodedata
 import spacy

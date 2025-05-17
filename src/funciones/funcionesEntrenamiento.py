@@ -1,3 +1,10 @@
+# --------------------------------------------------
+#
+# Autor: Pablo Spínola López
+# Description: Funciones centralizadas de la fase de entrenamiento.
+# 
+# --------------------------------------------------
+
 import pandas as pd
 import os
 import pickle

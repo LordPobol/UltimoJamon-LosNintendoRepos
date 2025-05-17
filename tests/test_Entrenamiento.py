@@ -1,3 +1,10 @@
+# --------------------------------------------------
+#
+# Autor: Pablo Spínola López
+# Description: Archivo de pruebas de la fase de entrenamiento con cobertura del 90%.
+# 
+# --------------------------------------------------
+
 import pandas as pd
 import numpy as np
 import pickle
