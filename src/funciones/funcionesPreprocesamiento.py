@@ -222,7 +222,7 @@ def extraer_caracteristicas(tweet):
         "tweet_text": texto_lematizado,
         "hashtags": hashtags,
         "texto_completo": texto_completo,
-        "texto_bert": texto_limpio_final + " " + " ".join(hashtags),
+        "texto_bert": texto_limpio_final + ". Etiquetas clave: " + " ".join(hashtags),
         "longitud_texto": estilisticas["longitud_texto"],
         "num_palabras": estilisticas["num_palabras"],
         **palabras_clave,
