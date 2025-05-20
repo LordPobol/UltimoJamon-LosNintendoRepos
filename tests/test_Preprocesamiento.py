@@ -1,3 +1,11 @@
+# --------------------------------------------------
+#
+# Autor: Pablo Spínola López
+# Description: Archivo de pruebas de la fase de preprocesamiento con cobertura del 90%.
+# 
+# --------------------------------------------------
+
+
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
