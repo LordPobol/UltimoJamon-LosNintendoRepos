@@ -31,7 +31,7 @@ ABREVIATURAS = {
     'tmb': 'también', 'pq': 'porque', 'xq': 'porque', 'dnd': 'donde',
     'kien': 'quien', 'salu2': 'saludos', 'aki': 'aquí', 'tqm': 'te quiero mucho',
     'when': 'cuando', 'wtf': 'qué carajos', 'lmao': 'risa', 'lmfao': 'risa',
-    'lol': 'risa'
+    'lol': 'risa', "fuck": "carajo"
 }
 
 # Palabras clave relacionadas con trastornos alimenticios
@@ -224,12 +224,15 @@ def extraer_caracteristicas(tweet):
     
     # Análisis de palabras clave sobre texto completo
     palabras_clave = analizar_palabras_clave(texto_completo)
+
+    # Definición de las oraciones para el modelo DETO
+    texto_bert = texto_limpio_final + ". Etiquetas: " + ", ".join(hashtags) if len(hashtags) > 0 else texto_limpio_final
     
     return {
         "tweet_text": texto_lematizado,
         "hashtags": hashtags,
         "texto_completo": texto_completo,
-        "texto_bert": texto_limpio_final + ". Etiquetas clave: " + " ".join(hashtags),
+        "texto_bert": texto_bert,
         "longitud_texto": estilisticas["longitud_texto"],
         "num_palabras": estilisticas["num_palabras"],
         **palabras_clave,
