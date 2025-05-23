@@ -70,6 +70,18 @@ def limpiar_texto(texto):
     texto = unicodedata.normalize('NFKD', texto).encode('ascii', 'ignore').decode('utf-8')
     return texto.lower()
 
+def limpiar_texto_bert(texto):
+    """
+    Limpia el texto sin eliminar acentos ni caracteres especiales importantes.
+    """
+    if pd.isnull(texto):
+        return ""
+    try:
+        texto = texto.encode("latin1").decode("utf-8")
+    except:
+        pass
+    return texto.lower()
+
 def expandir_abreviaturas(texto):
     """
     Descripción: Reemplaza abreviaturas presentes en el texto por sus equivalentes completos contenidos en la variable ABREVIATURAS.
@@ -91,6 +103,14 @@ def procesar_hashtags(texto):
     hashtags = re.findall(r"#(\w+)", texto)
     texto_sin_hashtags = re.sub(r"#\w+", "", texto)
     return texto_sin_hashtags.strip(), hashtags
+
+def limpieza_final_BETO(texto):
+    texto = re.sub(r"http\S+", "", texto)
+    texto = re.sub(r"@\w+", "", texto)
+    texto = re.sub(r"&", "y", texto)
+    texto = re.sub(r"[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ0-9\s.,;:!?¿¡\"'()\[\]{}-]", "", texto)
+    texto = re.sub(r"\s+", " ", texto).strip()
+    return texto
 
 def limpieza_final(texto):
     """
@@ -226,7 +246,10 @@ def extraer_caracteristicas(tweet):
     palabras_clave = analizar_palabras_clave(texto_completo)
 
     # Definición de las oraciones para el modelo DETO
-    texto_bert = texto_limpio_final + ". Etiquetas: " + ", ".join(hashtags) if len(hashtags) > 0 else texto_limpio_final
+    texto_limpio_bert = limpiar_texto_bert(texto_original)
+    texto_expandido_bert = expandir_abreviaturas(texto_limpio_bert)
+    texto_bert_base = limpieza_final_BETO(texto_expandido_bert)
+    texto_bert = texto_bert_base + ". Etiquetas: " + ", ".join(hashtags) if len(hashtags) > 0 else texto_bert_base
     
     return {
         "tweet_text": texto_lematizado,
