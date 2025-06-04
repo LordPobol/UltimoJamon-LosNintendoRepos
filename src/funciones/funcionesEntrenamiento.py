@@ -1,7 +1,7 @@
 # --------------------------------------------------
 #
 # Autor: Pablo Spínola López
-# Description: Funciones centralizadas de la fase de entrenamiento.
+# Description: Funciones centralizadas de la fase de entrenamiento de modelos tradicionales.
 # 
 # --------------------------------------------------
 

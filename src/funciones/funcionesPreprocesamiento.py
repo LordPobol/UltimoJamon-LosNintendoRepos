@@ -206,7 +206,6 @@ def obtener_hashtags_frecuentes_individuales(hashtags_fila, hashtags_validos):
     Salida: str - Cadena con los hashtags válidos separados por espacios.
     """
     return " ".join([tag for tag in hashtags_fila if tag in hashtags_validos])
-
 #######################################################################
 
 
@@ -261,5 +260,4 @@ def extraer_caracteristicas(tweet):
         **palabras_clave,
         **sentimiento
     }
-
 #######################################################################
