@@ -37,9 +37,9 @@ model_classes = {
 best_params_dict = {
     'MLP': {
         'activation': 'logistic',
-        'hidden_layer_sizes': (300, 200, 100),
+        'hidden_layer_sizes': (400, 300, 200, 100),
         'learning_rate': 'adaptive',
-        'max_iter': 300,
+        'max_iter': 50,
         'solver': 'adam',
         'random_state': 22
     },
@@ -54,12 +54,12 @@ best_params_dict = {
         'max_depth': None,
         'max_features': 'log2',
         'min_samples_leaf': 1,
-        'min_samples_split': 6,
-        'n_estimators': 600,
+        'min_samples_split': 7,
+        'n_estimators': 400,
         'random_state': 22
     },
     'SVM': {
-        'C': 400,
+        'C': 350,
         'gamma': 0.001,
         'kernel': 'rbf',
         'probability': True,
@@ -115,7 +115,6 @@ def predicciones_de_modelos(X_train, y_train, skf, oof_preds):
         for train_idx, val_idx in skf.split(X_train, y_train):
             X_tr, X_val = X_train.iloc[train_idx], X_train.iloc[val_idx]
             y_tr = y_train.iloc[train_idx]
-
 
             model = model_class(**best_params_dict[name])
             model.fit(X_tr, y_tr)
