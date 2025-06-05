@@ -105,6 +105,11 @@ def procesar_hashtags(texto):
     return texto_sin_hashtags.strip(), hashtags
 
 def limpieza_final_BETO(texto):
+    """
+    Descripción: Elimina URLs, menciones e intercambia el '&' por 'y', manteniendo caracteres especiales.
+    Entrada - texto (str): Cadena de texto posiblemente con menciones, enlaces y espacios innecesarios.
+    Salida - texto limpio (str): Texto limpio y legible, sin espacios no deseados.
+    """
     texto = re.sub(r"http\S+", "", texto)
     texto = re.sub(r"@\w+", "", texto)
     texto = re.sub(r"&", "y", texto)

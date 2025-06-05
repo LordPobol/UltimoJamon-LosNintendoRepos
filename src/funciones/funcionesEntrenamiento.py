@@ -1,13 +1,17 @@
 # --------------------------------------------------
 #
 # Autor: Pablo Spínola López
-# Description: Funciones centralizadas de la fase de entrenamiento de modelos tradicionales.
+# Description: Funciones centralizadas de la fase de entrenamiento de modelos tradicionales y evaluación general.
 # 
 # --------------------------------------------------
 
+# Importación de librerías
+# Manejo de información y archivos
 import pandas as pd
 import os
 import pickle
+
+# SciKit-Learn para análisis de datos y evaluación
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     classification_report,

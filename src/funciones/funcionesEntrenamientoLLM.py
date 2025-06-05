@@ -5,14 +5,18 @@
 # 
 # --------------------------------------------------
 
+# Librerías para manejo de información e integración
 import pandas as pd
 from tqdm import tqdm
+
+# SciKit_Learn para reporte de clasificación 
 from sklearn.metrics import classification_report
 
+# Librería de langchain para crear un objeto de tipo Template
 from langchain_core.prompts import PromptTemplate
 
 
-# Crear el prompt con few-shot
+# Crear el prompt con few-shot, con información del dataset de entrenamiento
 prompt = PromptTemplate.from_template("""
 Eres un asistente experto en salud mental. Tu tarea es analizar tweets e indicar si muestran señales de un posible trastorno alimenticio (como anorexia, bulimia, o similares).
 
