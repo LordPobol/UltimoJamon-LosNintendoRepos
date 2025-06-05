@@ -7,13 +7,34 @@
 
 import pandas as pd
 from tqdm import tqdm
-from sklearn.metrics import (
-    classification_report,
-    confusion_matrix,
-    ConfusionMatrixDisplay,
-    roc_curve,
-    roc_auc_score
-)
+from sklearn.metrics import classification_report
+
+from langchain_core.prompts import PromptTemplate
+
+
+# Crear el prompt con few-shot
+prompt = PromptTemplate.from_template("""
+Eres un asistente experto en salud mental. Tu tarea es analizar tweets e indicar si muestran señales de un posible trastorno alimenticio (como anorexia, bulimia, o similares).
+
+Responde únicamente con "Sí" si el tweet indica un posible trastorno alimenticio, y con "No" si no lo indica.
+
+Ejemplos:
+Tweet: "no comí en todo el día y me siento bien" → Sí
+Tweet: "me encanta comer con mis amigos los fines de semana" → No
+Tweet: "me siento gorda incluso si no como nada" → Sí
+Tweet: "hoy hice ejercicio y luego almorcé con mi familia" → No
+Tweet: "ser como ellas ♡♡
+  #hastaLoshuesos" → Sí
+Tweet: "hoy #domingo os esperamos desde las 10:00 de la mañana para empezar el día con un buen desayuno.
+
+también podéis reservar mesa para comer o cenar y disfrutar de nuestra carta o del menú fin de semana.
+ 980 56 99 34
+
+#felizdomingo #restaurantealabros #zamora  #yum" → No
+
+Ahora, clasifica el siguiente tweet, recuerda responder únicamente con dos letras en cada caso 'Sí' o 'No', sin explicaciones, como se muestra en los ejemplos. También recuerda que lo que recibes como input es únicamente el tweet y nada más que el tweet al que tienes que clasificar:
+Tweet: "{tweet}" → 
+""")
 
 
 def cargar_datos_entrenamiento():
@@ -58,7 +79,7 @@ def obtener_predicciones(chain, X):
             break  # debug en caso de error
     return predicciones
 
-def reporte_clasificacion(predicts, y_real):
+def reporte_clasificacion_llm(predicts, y_real):
     """
     Descripción: Generar predicciones, calcular probabilidades de predicción o funciones de decisión, y crea un reporte de clasificación.
     Entrada - predicts (array): Lista de predicciones.
@@ -69,41 +90,3 @@ def reporte_clasificacion(predicts, y_real):
     y_preds = pd.DataFrame(predicts, columns=['predicciones'])
     reporte = classification_report(y_real, y_preds)
     return y_preds, reporte
-
-def crear_matriz_confusion(y, y_pred):
-    """
-    Descripción: Calcula y prepara los valores  de la matriz de confusión para su visualización.
-    Entrada - y (array): Etiquetas verdaderas.
-            - y_pred (array): Etiquetas predichas.
-    Salida - cm (array): Matriz de confusión en forma de matriz.
-           - disp (objeto): Objeto para mostrar la matriz de confusión.
-    """
-    cm = confusion_matrix(y, y_pred)
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-    return cm, disp
-
-def calcular_roc_auc(y, y_pred):
-    """
-    Descripción: Calcula la curva ROC y el valor AUC del modelo.
-    Entrada - y (array): Etiquetas verdaderas.
-            - y_pred (array): Predicciones del modelo.
-    Salida - fpr (array): Tasas de falsos positivos.
-           - tpr (array): Tasas de verdaderos positivos.
-           - thresholds (array): Umbrales de decisión.
-           - auc_score (float): Área bajo la curva ROC.
-    """
-    fpr, tpr, thresholds = roc_curve(y, y_pred)
-    auc_score = roc_auc_score(y, y_pred)
-    return fpr, tpr, thresholds, auc_score
-
-def metricas_tpr_fpr(cm):
-    """
-    Descripción: Calcula las tasas de verdaderos positivos (TPR) y falsos positivos (FPR) a partir de una matriz de confusión.
-    Entrada - cm (array): Matriz de confusión en forma de matriz.
-    Salida - TPR (float): Tasa de verdaderos positivos.
-             FPR (float): Tasa de falsos positivos.
-    """
-    TN, FP, FN, TP = cm.ravel()
-    FPR = 0.0 if FP + TN == 0.0 else FP / (FP + TN)
-    TPR = 0.0 if TP + FN == 0.0 else TP / (TP + FN)
-    return TPR, FPR
