@@ -12,6 +12,7 @@ import torch.nn as nn
 import torch
 
 # Manejo de datos e información
+import pandas as pd
 import numpy as np
 import os
 
@@ -27,6 +28,10 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Tokenización
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+
+# Modelo para evaluar, usar para embedding
+model2embed = AutoModel.from_pretrained(MODEL_NAME)
+model2embed.eval()
 
 ##############################################################################################################################
 ####                   Clases utilizadas                   ####
@@ -117,6 +122,10 @@ class RobertaClassifier(nn.Module):
         # Salida en forma (batch_size,)
         return x.squeeze(-1)
     
+##############################################################################################################################
+####                   Funciones utilizadas                   ####
+##################################################################
+    
 def generar_loader(X, y, shuffle=None):
     """
     Descripción: Crea un DataLoader a partir de los textos y etiquetas proporcionados. 
@@ -179,3 +188,36 @@ def cargar_estado_modelo():
         )
     )
     return modelo_RoBERTa
+
+##############################################################################################################################
+####                   Funciones utilizadas (Módulo final)                   ####
+#################################################################################
+
+def data4embed(test=False):
+    # Carga de datos
+    if test:
+        df = pd.read_csv("../../data/ds_BETO_TEST_FINAL.csv")
+    else:
+        df = pd.read_csv("../../data/ds_BETO.csv")
+
+    # División de datos
+    texts = list(df["texto_bert"])
+    labels = list(df["class"])
+
+    return texts, labels
+
+def get_embeddings(text_list):
+    embeddings = []
+
+    with torch.no_grad():
+        for text in text_list:
+            inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=128)
+            outputs = model2embed(**inputs)
+            
+            # Usamos el mean pooling del último estado oculto
+            last_hidden_state = outputs.last_hidden_state  # (1, seq_len, hidden_size)
+            mean_embedding = last_hidden_state.mean(dim=1)  # (1, hidden_size)
+            embeddings.append(mean_embedding.squeeze().numpy())
+
+    return np.array(embeddings)
+
