@@ -194,6 +194,13 @@ def cargar_estado_modelo():
 #################################################################################
 
 def data4embed(test=False):
+    """
+    Descripción: Carga los datos desde archivos CSV, según si se requiere el conjunto de prueba o no.
+                 Extrae y retorna los textos procesados para BERT y sus etiquetas correspondientes.
+    Entrada: - test (bool): Si es True, carga el conjunto de prueba. Si es False, carga el conjunto de entrenamiento.
+    Salida: - texts (list): Lista de textos preprocesados para BERT.
+            - labels (list): Lista de etiquetas asociadas a cada texto.
+    """
     # Carga de datos
     if test:
         df = pd.read_csv("../../data/ds_BETO_TEST_FINAL.csv")
@@ -207,6 +214,12 @@ def data4embed(test=False):
     return texts, labels
 
 def get_embeddings(text_list):
+    """
+    Descripción: Genera los embeddings de una lista de textos utilizando nuestro modelo tipo BERT.
+                 Usa mean pooling sobre el último estado oculto del modelo para obtener un vector por texto.
+    Entrada: - text_list (list): Lista de cadenas de texto para las cuales se desea obtener embeddings.
+    Salida: - embeddings (np.ndarray): Arreglo NumPy con los vectores de embeddings (uno por texto).
+    """
     embeddings = []
 
     with torch.no_grad():
@@ -215,8 +228,8 @@ def get_embeddings(text_list):
             outputs = model2embed(**inputs)
             
             # Usamos el mean pooling del último estado oculto
-            last_hidden_state = outputs.last_hidden_state  # (1, seq_len, hidden_size)
-            mean_embedding = last_hidden_state.mean(dim=1)  # (1, hidden_size)
+            last_hidden_state = outputs.last_hidden_state
+            mean_embedding = last_hidden_state.mean(dim=1)
             embeddings.append(mean_embedding.squeeze().numpy())
 
     return np.array(embeddings)
