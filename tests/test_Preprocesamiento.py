@@ -31,6 +31,24 @@ def test_limpiar_texto_con_caracteres_especiales():
     resultado = limpiar_texto(texto)
     assert resultado == "nino con cafe golpea pinata"
 
+########################################################################
+# Pruebas unitarias para la segunda función: limpiar_text_bert(string) #
+########################################################################
+
+def test_limpiar_texto_bert_normal():
+    texto = "¡Hola! ¿Cómo estás? Bien, ¿y tú?"
+    resultado = limpiar_texto_bert(texto)
+    assert resultado == "¡hola! ¿cómo estás? bien, ¿y tú?", f"Resultado inesperado: {resultado}"
+
+def test_limpiar_texto_bert_nulo():
+    resultado = limpiar_texto_bert(None)
+    assert resultado == "", f"Resultado inesperado: {resultado}"
+
+def test_limpiar_texto_bert_con_acento():
+    texto = "Los tralaleritos decían: '¡Tralalá!',\nLas tralaleritas decían: '¡Tralalí!'"
+    resultado = limpiar_texto_bert(texto)
+    assert resultado == "los tralaleritos decían: '¡tralalá!',\nlas tralaleritas decían: '¡tralalí!'", f"Resultado inesperado: {resultado}"
+
 ###########################################################################
 # Pruebas unitarias para la segunda función: expandir_abreviaturas(string)#
 ###########################################################################
@@ -71,6 +89,25 @@ def test_procesar_hashtags_unico():
     texto_limpio, hashtags = procesar_hashtags(texto)
     assert texto_limpio == ""
     assert hashtags == ["yosoypablo"]
+
+########################################################################
+# Pruebas unitarias para la cuarta función: limpieza_final_BETO(string)#
+########################################################################
+
+def test_limpieza_final_BETO_urls_y_menciones():
+    texto = "Visita http://ejemplo.com , y menciona a !@usuario!"
+    resultado = limpieza_final_BETO(texto)
+    assert resultado == "Visita , y menciona a !!", f"Resultado inesperado: {resultado}"
+
+def test_limpieza_final_BETO_simbolos():
+    texto = "Hola & bienvenid@! #fiesta :-)"
+    resultado = limpieza_final_BETO(texto)
+    assert resultado == "Hola y bienvenid! fiesta :-)", f"Resultado inesperado: {resultado}"
+
+def test_limpieza_final_BETO_espacios_extra():
+    texto = "  Esto    tiene   muchos   espacios   "
+    resultado = limpieza_final_BETO(texto)
+    assert resultado == "Esto tiene muchos espacios"
 
 ###################################################################
 # Pruebas unitarias para la cuarta función: limpieza_final(string)#

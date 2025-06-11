@@ -127,7 +127,7 @@ def predicciones_de_modelos(X_train, y_train, skf, oof_preds):
     
     return oof_preds
 
-def test_ensamble(X_test):
+def probar_ensamble(X_test):
     """
     Descripción: Genera las predicciones de los modelos previamente entrenados sobre el conjunto de prueba, 
                  creando una matriz de características meta para el modelo de ensamblado.
